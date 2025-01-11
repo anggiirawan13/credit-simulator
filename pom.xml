@@ -52,7 +52,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.creditsimulator.MainApp</mainClass>
+                            <mainClass>com.simulator.credit.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -68,7 +68,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.example.creditsimulator.MainApp</mainClass>
+                            <mainClass>com.simulator.credit.Main</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
