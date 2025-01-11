@@ -31,9 +31,9 @@ public class LoanCalculatorTest {
         LoanCalculator.creditCalculation(loanModel);
 
         String expectedOutput =
-                "Tahun ke-1: Rp 2250000.00/bulan, Suku Bunga: 8.00, Total: Rp 27000000.00, Sisa Pinjaman: Rp 54000000.00\n" +
-                        "Tahun ke-2: Rp 2432250.00/bulan, Suku Bunga: 8.10, Total: Rp 29187000.00, Sisa Pinjaman: Rp 29187000.00\n" +
-                        "Tahun ke-3: Rp 2641423.50/bulan, Suku Bunga: 8.60, Total: Rp 31697082.00, Sisa Pinjaman: Rp 0.00\n";
+                "Tahun ke-1: Rp 2270833.33/bulan, Suku Bunga: 9.00, Total: Rp 27250000.00, Sisa Pinjaman: Rp 54500000.00\n" +
+                        "Tahun ke-2: Rp 2477479.17/bulan, Suku Bunga: 9.10, Total: Rp 29729750.00, Sisa Pinjaman: Rp 29729750.00\n" +
+                        "Tahun ke-3: Rp 2715317.17/bulan, Suku Bunga: 9.60, Total: Rp 32583806.00, Sisa Pinjaman: Rp 0.00\n";
 
         assertEquals(expectedOutput, outputStream.toString());
     }
