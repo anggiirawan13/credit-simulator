@@ -21,7 +21,7 @@ docker rmi credit-simulator
 echo "----------------------------------------"
 echo "Building Maven project..."
 echo "----------------------------------------"
-mvn clean package -DskipTests
+mvn clean package
 
 if [ $? -ne 0 ]; then
   echo "[ERROR] Build failed. Exiting..."
