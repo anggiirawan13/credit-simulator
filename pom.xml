@@ -87,7 +87,7 @@
                 <artifactId>dockerfile-maven-plugin</artifactId>
                 <version>1.4.13</version>
                 <configuration>
-                    <repository>your-dockerhub-username/credit-simulator</repository>
+                    <repository>masgong/credit-simulator</repository>
                     <tag>${project.version}</tag>
                     <buildArgs>
                         <JAR_FILE>target/credit-simulator-1.0-SNAPSHOT-jar-with-dependencies.jar</JAR_FILE>
