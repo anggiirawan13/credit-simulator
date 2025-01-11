@@ -52,7 +52,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.simulator.credit.Main</mainClass>
+                            <mainClass>com.example.creditsimulator.MainApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -68,7 +68,7 @@
                     </descriptorRefs>
                     <archive>
                         <manifest>
-                            <mainClass>com.simulator.credit.Main</mainClass>
+                            <mainClass>com.example.creditsimulator.MainApp</mainClass>
                         </manifest>
                     </archive>
                 </configuration>
@@ -80,6 +80,19 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.13</version>
+                <configuration>
+                    <repository>your-dockerhub-username/credit-simulator</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <JAR_FILE>target/credit-simulator-1.0-SNAPSHOT-jar-with-dependencies.jar</JAR_FILE>
+                    </buildArgs>
+                </configuration>
             </plugin>
         </plugins>
     </build>
