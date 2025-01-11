@@ -1,0 +1,54 @@
+#!/bin/bash
+
+PROJECT_NAME="credit-simulator"
+IMAGE_NAME="credit-simulator-image"
+
+echo "----------------------------------------------------------"
+echo "Stopping container credit-simulator already running..."
+echo "----------------------------------------------------------"
+docker stop credit-simulator
+
+echo "----------------------------------------------------------"
+echo "Removing container credit-simulator already exists..."
+echo "----------------------------------------------------------"
+docker rm credit-simulator
+
+echo "----------------------------------------------------------"
+echo "Removing image credit-simulator already exists..."
+echo "----------------------------------------------------------"
+docker rmi credit-simulator
+
+echo "----------------------------------------"
+echo "Building Maven project..."
+echo "----------------------------------------"
+mvn clean package -DskipTests
+
+if [ $? -ne 0 ]; then
+  echo "[ERROR] Build failed. Exiting..."
+  exit 1
+fi
+
+echo "----------------------------------------"
+echo "Creating Docker image..."
+echo "----------------------------------------"
+docker build -t $IMAGE_NAME .
+
+if [ $? -ne 0 ]; then
+  echo "[ERROR] Docker image build failed. Exiting..."
+  exit 1
+fi
+
+echo "----------------------------------------"
+echo "Running Docker container..."
+echo "----------------------------------------"
+
+echo "----------------------------------------"
+echo "[SUCCESS] Docker container is running!"
+echo "----------------------------------------"
+
+docker run -it --name $PROJECT_NAME $IMAGE_NAME
+
+if [ $? -ne 0 ]; then
+  echo "[ERROR] Docker container failed to start. Exiting..."
+  exit 1
+fi
