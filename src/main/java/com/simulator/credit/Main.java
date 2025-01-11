@@ -8,7 +8,8 @@ public class Main {
 
     public static void main(String[] args) {
         LoanController loanController = new LoanController();
-        loanController.creditSimulator();
+//        loanController.simulatorManual();
+        loanController.simulatorCSVFile();
     }
 
 }
