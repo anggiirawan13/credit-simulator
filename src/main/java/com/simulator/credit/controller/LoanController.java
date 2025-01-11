@@ -4,10 +4,15 @@ import com.simulator.credit.model.LoanCalculator;
 import com.simulator.credit.model.LoanModel;
 import com.simulator.credit.model.NullEmptyChecker;
 import com.simulator.credit.view.LoanView;
+import netscape.javascript.JSObject;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -63,6 +68,48 @@ public class LoanController {
                 String choice = LoanView.getInput("Enter choice for CSV file");
                 File file = files[Integer.parseInt(choice) - 1];
                 readCSVFile(file);
+            }
+        } catch (Exception e) {}
+    }
+
+    public void simulatorAPI() {
+        try {
+            URL url = new URL("https://run.mocky.io/v3/5f78065f-6632-4203-a73c-a9cce9d8e262");
+            HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+            connection.setRequestMethod("GET");
+            connection.setRequestProperty("Accept", "application/json");
+
+            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+            }
+            connection.disconnect();
+
+            JSONObject jsonObject = new JSONObject(stringBuilder.toString());
+            JSONArray jsonArray = jsonObject.getJSONArray("result");
+
+            System.out.println("Result: " + jsonArray);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject loan = jsonArray.getJSONObject(i);
+
+                String vehicleType = loan.getString("vehicleType");
+                String vehicleCondition = loan.getString("vehicleCondition");
+                int vehicleYear = loan.getInt("vehicleYear");
+                double loanAmount = loan.getDouble("loanAmount");
+                int loanPeriod = loan.getInt("loanPeriod");
+                double downPaymentAmount = loan.getDouble("downPaymentAmount");
+
+                LoanModel loanModel = new LoanModel(
+                        vehicleType,
+                        vehicleCondition,
+                        String.valueOf(vehicleYear),
+                        String.valueOf(loanAmount),
+                        String.valueOf(loanPeriod),
+                        String.valueOf(downPaymentAmount)
+                );
+                loanCalculator.creditCalculation(loanModel);
             }
         } catch (Exception e) {}
     }

@@ -9,7 +9,8 @@ public class Main {
     public static void main(String[] args) {
         LoanController loanController = new LoanController();
 //        loanController.simulatorManual();
-        loanController.simulatorCSVFile();
+//        loanController.simulatorCSVFile();
+        loanController.simulatorAPI();
     }
 
 }
