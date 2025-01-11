@@ -23,9 +23,9 @@ public class LoanController {
         String vehicleType = "MOBIL";
         String vehicleCondition = "BARU";
         String vehicleYear = "2024";
-        String loanAmount = "1000000000";
-        String loanPeriod = "4";
-        String downPaymentAmount = "500000000";
+        String loanAmount = "100000000";
+        String loanPeriod = "3";
+        String downPaymentAmount = "25000000";
 
         LoanModel loanModel = new LoanModel(
                 vehicleType,
