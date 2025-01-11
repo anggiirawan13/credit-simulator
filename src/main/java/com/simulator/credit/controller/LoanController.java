@@ -4,7 +4,6 @@ import com.simulator.credit.model.LoanCalculator;
 import com.simulator.credit.model.LoanModel;
 import com.simulator.credit.model.NullEmptyChecker;
 import com.simulator.credit.view.LoanView;
-import netscape.javascript.JSObject;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,33 +13,17 @@ import java.io.FileReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.Arrays;
-import java.util.Enumeration;
-import java.util.Objects;
 
 public class LoanController {
 
-    private LoanCalculator loanCalculator;
-
-    public LoanController() {
-        this.loanCalculator = new LoanCalculator();
-    }
-
-    public void simulatorManual() {
-//        String vehicleType = LoanView.getInput("Input Jenis Kendaraan Motor | Mobil");
-//        String vehicleCondition = LoanView.getInput("Input Kendaraan Bekas | Baru");
-//        String vehicleYear = LoanView.getInput("Input Tahun Kendaraan");
-//        String loanAmount = LoanView.getInput("Input Jumlah Pinjaman Total");
-//        String loanPeriod = LoanView.getInput("Input Tenor Pinjaman");
-//        String downPaymentAmount = LoanView.getInput("Input Jumlah DP");
-
-        String vehicleType = "MOBIL";
-        String vehicleCondition = "BARU";
-        String vehicleYear = "2024";
-        String loanAmount = "100000000";
-        String loanPeriod = "3";
-        String downPaymentAmount = "25000000";
-
+    private void doCalculateLoan(
+            String vehicleType,
+            String vehicleCondition,
+            String vehicleYear,
+            String loanAmount,
+            String loanPeriod,
+            String downPaymentAmount
+    ) {
         LoanModel loanModel = new LoanModel(
                 vehicleType,
                 vehicleCondition,
@@ -49,32 +32,60 @@ public class LoanController {
                 loanPeriod,
                 downPaymentAmount
         );
-        loanCalculator.creditCalculation(loanModel);
+        LoanCalculator.creditCalculation(loanModel);
     }
 
-    public void simulatorCSVFile() {
+    public void simulatorManual() {
+        String vehicleType = LoanView.getInput("Input Jenis Kendaraan (Motor/Mobil)");
+        String vehicleCondition = LoanView.getInput("Input Kendaraan (Bekas/Baru)");
+        String vehicleYear = LoanView.getInput("Input Tahun Kendaraan (ex: 2024)");
+        String loanAmount = LoanView.getInput("Input Jumlah Pinjaman Total (max: 1 miliar)");
+        String loanPeriod = LoanView.getInput("Input Tenor Pinjaman (1-6 tahun)");
+        String downPaymentAmount = LoanView.getInput("Input Jumlah DP");
+
+        doCalculateLoan(
+                vehicleType,
+                vehicleCondition,
+                vehicleYear,
+                loanAmount,
+                loanPeriod,
+                downPaymentAmount
+        );
+    }
+
+    public void simulatorTXTFile() {
         try {
-            File folder = new File(Objects.requireNonNull(this.getClass().getClassLoader().getResource("file/csv")).toURI());
-            File[] files = folder.listFiles();
+            String filePath = LoanView.getInput("Input file path and filename (/path/your/file/file.txt)");
+            File file = new File(filePath);
 
-            if (NullEmptyChecker.isNotNullOrEmpty(files)) {
-                System.out.println("CSV file found");
-                for (int i = 0; i < files.length; i++) {
-                    if (files[i].getName().endsWith(".csv")) {
-                        System.out.println((i + 1) + ". " + files[i].getName());
-                    }
-                }
-
-                String choice = LoanView.getInput("Enter choice for CSV file");
-                File file = files[Integer.parseInt(choice) - 1];
-                readCSVFile(file);
+            if (NullEmptyChecker.isNullOrEmpty(file) || !file.exists()) {
+                System.out.println("File not found");
+                return;
             }
-        } catch (Exception e) {}
+
+            if (!file.isFile()) {
+                System.out.println("Directory is not a file");
+                return;
+            }
+
+            if (!file.getName().endsWith(".txt")) {
+                System.out.println("Extension file is not TXT");
+                return;
+            }
+
+            System.out.println("TXT file found");
+
+            readTXTFile(file);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public void simulatorAPI() {
         try {
-            URL url = new URL("https://run.mocky.io/v3/5f78065f-6632-4203-a73c-a9cce9d8e262");
+            String urlAPI = LoanView.getInput("Enter URL for API");
+            System.out.println("Loading . . .");
+            URL url = new URL(urlAPI);
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
             connection.setRequestProperty("Accept", "application/json");
@@ -96,25 +107,26 @@ public class LoanController {
 
                 String vehicleType = loan.getString("vehicleType");
                 String vehicleCondition = loan.getString("vehicleCondition");
-                int vehicleYear = loan.getInt("vehicleYear");
-                double loanAmount = loan.getDouble("loanAmount");
-                int loanPeriod = loan.getInt("loanPeriod");
-                double downPaymentAmount = loan.getDouble("downPaymentAmount");
+                String vehicleYear = loan.getString("vehicleYear");
+                String loanAmount = loan.getString("loanAmount");
+                String loanPeriod = loan.getString("loanPeriod");
+                String downPaymentAmount = loan.getString("downPaymentAmount");
 
-                LoanModel loanModel = new LoanModel(
+                doCalculateLoan(
                         vehicleType,
                         vehicleCondition,
-                        String.valueOf(vehicleYear),
-                        String.valueOf(loanAmount),
-                        String.valueOf(loanPeriod),
-                        String.valueOf(downPaymentAmount)
+                        vehicleYear,
+                        loanAmount,
+                        loanPeriod,
+                        downPaymentAmount
                 );
-                loanCalculator.creditCalculation(loanModel);
             }
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    private void readCSVFile(File file) {
+    public void readTXTFile(File file) {
         try (BufferedReader br = new BufferedReader(new FileReader(file))) {
             while (br.ready()) {
                 String line = br.readLine();
@@ -129,7 +141,7 @@ public class LoanController {
                 String loanPeriod = split[5];
                 String downPaymentAmount = split[6];
 
-                LoanModel loanModel = new LoanModel(
+                doCalculateLoan(
                         vehicleType,
                         vehicleCondition,
                         vehicleYear,
@@ -137,7 +149,6 @@ public class LoanController {
                         loanPeriod,
                         downPaymentAmount
                 );
-                loanCalculator.creditCalculation(loanModel);
             }
         } catch (Exception e) {
             throw new RuntimeException(e);
